@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Send Job to Make</title>
+</head>
+<body>
+  <h2>Send LinkedIn Job to Make</h2>
+
+  <label for="jobTitle">Job Title:</label><br>
+  <input type="text" id="jobTitle" style="width: 400px;"><br><br>
+
+  <label for="company">Company:</label><br>
+  <input type="text" id="company" style="width: 400px;"><br><br>
+
+  <label for="jobText">Job Description:</label><br>
+  <textarea id="jobText" rows="10" cols="60" placeholder="Paste job description here"></textarea><br><br>
+
+  <button onclick="sendToMake()">Send to Make</button>
+  <p id="status" style="font-weight: bold;"></p>
+
+  <script>
+    function sendToMake() {
+      const title = document.getElementById("jobTitle").value.trim();
+      const company = document.getElementById("company").value.trim();
+      const text = document.getElementById("jobText").value.trim();
+      const status = document.getElementById("status");
+
+      if (!title || !company || !text) {
+        status.innerText = "❗ Please fill out all fields before sending.";
+        status.style.color = "red";
+        return;
+      }
+
+      fetch("https://hook.us1.make.com/cxxwhesu82p4xe9wf4msxtd415gwb2mj", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          title: title,
+          company: company,
+          text: text
+        })
+      })
+      .then(() => {
+        status.innerText = "✅ Job sent to Make successfully!";
+        status.style.color = "green";
+        document.getElementById("jobTitle").value = "";
+        document.getElementById("company").value = "";
+        document.getElementById("jobText").value = "";
+      })
+      .catch(e => {
+        status.innerText = "❌ Error: " + e.message;
+        status.style.color = "red";
+      });
+    }
+  </script>
+</body>
+</html>
